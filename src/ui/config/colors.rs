@@ -1,0 +1,10 @@
+pub const TERMINAL_BG: u32 = 0xF5F5F5;
+pub const TERMINAL_BORDER: u32 = 0xE5E5E5;
+
+pub const PRIMARY_BG: u32 = 0x3B82F6;
+pub const PRIMARY_BG_HOVER: u32 = 0x2563EB;
+pub const PRIMARY_TEXT: u32 = 0xFFFFFF;
+
+pub const SECONDARY_BG: u32 = 0xF5F5F5;
+pub const SECONDARY_BG_HOVER: u32 = 0xE5E5E5;
+pub const SECONDARY_TEXT: u32 = 0x111827;
