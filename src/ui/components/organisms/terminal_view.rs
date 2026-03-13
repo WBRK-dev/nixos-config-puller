@@ -1,4 +1,4 @@
-use gpui::{Div, InteractiveElement, IntoElement, ParentElement, ScrollHandle, Stateful, StatefulInteractiveElement, Styled, StyledText, div, rgb};
+use gpui::{Div, InteractiveElement, IntoElement, ParentElement, ScrollHandle, Stateful, StatefulInteractiveElement, Styled, div, rgb};
 
 use crate::ui::config::colors::{TERMINAL_BG, TERMINAL_BORDER};
 
