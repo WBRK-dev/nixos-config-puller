@@ -1,10 +1,20 @@
 use gpui::{AppContext, Application, Bounds, Point, Size, WindowBounds, WindowOptions, px};
 
-use crate::ui::pages::RootView;
+use crate::{nixos::configuration::check_for_updates, ui::pages::RootView};
 
+mod config;
+mod nixos;
 mod ui;
 
 fn main() {
+    let updates = match check_for_updates() {
+        nixos::configuration::CheckForUpdatesResult::UpdateAvailable(result) => result,
+        nixos::configuration::CheckForUpdatesResult::NoUpdateAvailable => {
+            println!("No update available, exiting...");
+            return;
+        }
+    };
+
     Application::new().run(|app| {
         app.open_window(
             WindowOptions {
@@ -16,7 +26,7 @@ fn main() {
                 ..WindowOptions::default()
             },
             |_window, app| {
-                app.new(|_| RootView::new(String::new()))
+                app.new(|_| RootView::new(updates))
             }
         ).unwrap();
     })

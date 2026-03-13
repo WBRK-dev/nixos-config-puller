@@ -1,40 +1,25 @@
-use std::{io::{BufRead, BufReader}, process::{Command, Stdio}, sync::mpsc};
+use std::sync::mpsc;
 
 use gpui::{Context, IntoElement, ParentElement, Render, Styled, Window, div, white};
 
-use crate::ui::components::atoms::{ButtonTheme, TerminalView, button};
+use crate::{nixos::configuration::upgrade, ui::components::{atoms::{ButtonTheme, button}, organisms::{TerminalLine, TerminalView}}};
 
 pub struct RootView {
     terminal: TerminalView,
 }
 
 impl RootView {
-    pub fn new(buffer: String) -> Self {
+    pub fn new(buffer: Vec<TerminalLine>) -> Self {
         Self {
             terminal: TerminalView::new(buffer),
         }
     }
 
-    fn run_command(&mut self, cx: &mut Context<Self>) {
-        let (tx, rx) = mpsc::channel::<String>();
+    fn upgrade_configuration(&mut self, cx: &mut Context<Self>) {
+        let (tx, rx) = mpsc::channel::<TerminalLine>();
 
         std::thread::spawn(move || {
-            let mut child = Command::new("sh")
-                .args(["-c", "echo starting; ls -la; sleep 2; echo done"])
-                .stdout(Stdio::piped())
-                .stderr(Stdio::piped())
-                .spawn()
-                .expect("failed to spawn command");
-
-            let stdout = child.stdout.take().unwrap();
-            let reader = BufReader::new(stdout);
-
-            for line in reader.lines() {
-                let line = line.unwrap_or_default();
-                if tx.send(line).is_err() {
-                    break;
-                }
-            }
+            upgrade(tx);
         });
 
         cx.spawn(async move |root_view, cx| {
@@ -42,7 +27,7 @@ impl RootView {
                 match rx.try_recv() {
                     Ok(line) => {
                         let _ = root_view.update(cx, |view, cx| {
-                            view.terminal.append(&line);
+                            view.terminal.append(line);
                             cx.notify();
                         });
                     }
@@ -59,7 +44,7 @@ impl RootView {
 impl Render for RootView {
     fn render(&mut self, _window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
         let on_upgrade = cx.listener(|view: &mut Self, _event, _window, cx| {
-            view.run_command(cx);
+            view.upgrade_configuration(cx);
         });
 
         div()

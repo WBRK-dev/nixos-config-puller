@@ -5,3 +5,5 @@ edition = "2024"
 
 [dependencies]
 gpui = "0.2.2"
+# gpui = { git = "https://github.com/zed-industries/zed.git", package = "gpui", rev = "e0881e38f91b87623795208615ca466415d1970e" }
+# gpui_platform = { git = "https://github.com/zed-industries/zed.git", package = "gpui_platform", features = [ "wayland" ], rev = "e0881e38f91b87623795208615ca466415d1970e" }

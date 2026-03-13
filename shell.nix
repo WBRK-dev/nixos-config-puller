@@ -13,6 +13,8 @@ pkgs.mkShell {
     xorg.libXi
     xorg.libXrandr
     vulkan-loader
+    pkg-config
+    fontconfig
   ];
 
   LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [ pkgs.wayland pkgs.libxkbcommon pkgs.xorg.libX11 pkgs.xorg.libxcb pkgs.vulkan-loader ];
