@@ -47,6 +47,10 @@ impl Render for RootView {
             view.upgrade_configuration(cx);
         });
 
+        let on_ignore = cx.listener(|_view: &mut Self, _event, _window, cx| {
+            cx.quit();
+        });
+
         div()
             .size_full()
             .bg(white())
@@ -64,7 +68,8 @@ impl Render for RootView {
                     .children([
                         button()
                             .text("Ignore")
-                            .theme(ButtonTheme::Secondary),
+                            .theme(ButtonTheme::Secondary)
+                            .on_click(on_ignore),
                         button()
                             .text("Upgrade")
                             .theme(ButtonTheme::Primary)
