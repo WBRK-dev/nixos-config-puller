@@ -1,7 +1,9 @@
-{
-  lib,
+{ lib,
   rustPlatform,
   pkg-config,
+  makeWrapper,
+  git,
+  openssh,
   wayland,
   wayland-protocols,
   libxkbcommon,
@@ -19,6 +21,7 @@ rustPlatform.buildRustPackage rec {
 
   nativeBuildInputs = [
     pkg-config
+    makeWrapper
   ];
 
   buildInputs = [
@@ -33,6 +36,12 @@ rustPlatform.buildRustPackage rec {
     vulkan-loader
     fontconfig
   ];
+
+  postInstall = ''
+    wrapProgram $out/bin/nixos-config-puller \
+      --prefix LD_LIBRARY_PATH : ${lib.makeLibraryPath buildInputs} \
+      --prefix PATH : ${lib.makeBinPath [git openssh]}
+  '';
 
   meta = with lib; {
     description = "NixOS config puller";

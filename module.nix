@@ -36,15 +36,16 @@ in
       after = [ "graphical-session.target" "network-online.target" ];
       wants = [ "network-online.target" ];
 
+      environment = {
+        XDG_SESSION_TYPE = "wayland";
+        WAYLAND_DISPLAY = "wayland-0";
+      };
+
       serviceConfig = {
         ExecStart = "${cfg.package}/bin/nixos-config-puller";
         Restart = "on-failure";
         RestartSec = 5;
       };
-    };
-
-    users.users.${cfg.user} = lib.mkIf (cfg.autoStart && cfg.user != "") {
-      isNormalUser = true;
     };
   };
 }
